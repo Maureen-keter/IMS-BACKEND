@@ -16,26 +16,33 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cohort {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
-    private LocalDate startDate;
-    private  LocalDate endDate;
-    private Instant createdAt;
-    private Boolean isActive=true;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
+
+    private Instant createdAt;
+
+    private Boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id")
     private Department department;
 
-//    @OneToMany(mappedBy ="rotation", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<PerformanceReview> performanceReviews;
-
-    @OneToMany(mappedBy ="cohort", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy ="cohort", cascade = CascadeType.ALL)
     private List<User> interns;
 
-
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = Instant.now();
+    }
 }

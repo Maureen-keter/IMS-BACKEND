@@ -11,6 +11,7 @@ public class Request{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String description;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

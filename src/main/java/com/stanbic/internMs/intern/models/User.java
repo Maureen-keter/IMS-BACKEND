@@ -16,23 +16,23 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
 
-    @ManyToMany
-    @JoinTable(
-            name="user_rotations",
-            joinColumns =@JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="rotation_id")
-    )
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fullName;
     private String userID;
+
     @NotBlank(message="Email cannot be empty")
-    @Email()
+    @Email
     private String email;
+
     private String phoneNumber;
+
     private String password;
-    private Role role=Role.INTERN;
+
+    @ManyToOne
+    private Role role;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="department_id")
@@ -48,7 +48,11 @@ public class User {
     @JoinColumn(name="cohort_id")
     private Cohort cohort;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_rotations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "rotation_id")
+    )
     private List<Rotation> rotations;
-
-
 }

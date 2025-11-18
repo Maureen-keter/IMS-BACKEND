@@ -15,15 +15,33 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Department {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    private LocalDateTime createdAt=LocalDateTime.now();
+
+    private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     private List<User> users;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     private List<Rotation> rotations;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<Cohort> cohorts;
+
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

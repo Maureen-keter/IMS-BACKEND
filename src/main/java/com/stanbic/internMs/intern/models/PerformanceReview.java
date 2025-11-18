@@ -13,28 +13,31 @@ import java.time.LocalDate;
 @Table(name="performance_reviews")
 @AllArgsConstructor
 @NoArgsConstructor
-
-
 public class PerformanceReview {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="intern_id", nullable = false)
     private User intern;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="line_manager_id",nullable = false)
+    @JoinColumn(name="line_manager_id", nullable = false)
     private User lineManager;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rotation_id")
     private Rotation rotation;
+
     private LocalDate startDate;
     private LocalDate reviewDate;
 
+    @Enumerated(EnumType.STRING)
     private ReviewPeriod period;
-    private LocalDate createdAt=LocalDate.now();
+
+    private LocalDate createdAt;
 
     @Enumerated(EnumType.STRING)
     private PerformanceRating qualityOfWork;
@@ -57,11 +60,11 @@ public class PerformanceReview {
     @Enumerated(EnumType.STRING)
     private PerformanceRating selfLeadership;
 
-    @Column(length=1000)
+    @Column(length = 1000)
     private String improvementAreas;
-    @Column(length=1000)
+    @Column(length = 1000)
     private String strengths;
-    @Column(length=1000)
+    @Column(length = 1000)
     private String summary;
 
     private Boolean objectivesMet;
@@ -72,29 +75,25 @@ public class PerformanceReview {
     private LocalDate newCompletionDate;
     private String learnerComments;
 
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDate.now();
+    }
 
-
-//    Helper method to compute avg performance score
-    public double calculateAverageScore(){
-        PerformanceRating[] ratings= {
+    public double calculateAverageScore() {
+        PerformanceRating[] ratings = {
                 qualityOfWork, jobKnowledge, communication, quantityOfWork,
                 dependability, interpersonalSkills, initiative, adaptability,
                 decisionMaking, selfLeadership
         };
-
-        int total=0;
-        int count=0;
-
-        for(PerformanceRating rating:ratings){
-            if (rating !=null){
-                total+=rating.getScore();
-                count++;
-            }
+        int total = 0, count = 0;
+        for (PerformanceRating r : ratings) {
+            if (r != null) { total += r.getScore(); count++; }
         }
-        return count > 0? (double) total/count: 0.0;
+        return count > 0 ? (double) total / count : 0.0;
     }
 
-    public enum ReviewPeriod{
-        MONTH_1,MONTH_2,MONTH_3,MONTH_4,MONTH_5,MONTH_6
+    public enum ReviewPeriod {
+        MONTH_1, MONTH_2, MONTH_3, MONTH_4, MONTH_5, MONTH_6
     }
 }
